@@ -14,10 +14,10 @@ app.use(bodyParser.json());
 
 // PostgreSQL connection configuration
 const pool = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'product_management',
-    password: '1234',
+    user: process.env.POSTGRES_USER || 'postgres',
+    host: process.env.POSTGRES_HOST || 'localhost',
+    database: process.env.POSTGRES_DATABASE || 'product_management',
+    password: process.env.POSTGRES_PASSWORD || '1234',
     port: 5432,
 });
 
