@@ -6,11 +6,11 @@ if (process.env.NODE_ENV !== 'production') {
 
 // Configure PostgreSQL connection
 const pool = new Pool({
-  user: process.env.PG_USER,
-  host: process.env.PG_HOST,
-  database: process.env.PG_DATABASE,
-  password: process.env.PG_PASSWORD,
-  port: process.env.PG_PORT,
+  user: process.env.POSTGRES_USER,
+  host: process.env.POSTGRES_HOST,
+  database: process.env.POSTGRES_DATABASE,
+  password: process.env.POSTGRES_PASSWORD,
+  port: 5432 || process.env.PG_PORT,
   // Set ssl only in production
   ssl: process.env.NODE_ENV === 'production' ? {
     rejectUnauthorized: false, // This may be necessary for some cloud providers like Vercel
