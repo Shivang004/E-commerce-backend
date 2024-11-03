@@ -20,54 +20,32 @@ const verifyToken = (req, res, next) => {
 
 export default async function handler(req, res) {
   const { method } = req;
-  const { id } = req.query; // Get the product ID from the query
-
   if (method === 'GET') {
+    // Fetch all products
     try {
-      const result = await pool.query('SELECT * FROM products WHERE id = $1', [id]);
-      if (result.rows.length > 0) {
-        res.status(200).json(result.rows[0]);
-      } else {
-        res.status(404).json({ error: 'Product not found' });
-      }
+      const result = await pool.query('SELECT * FROM products');
+      res.status(200).json(result.rows);
     } catch (error) {
-      console.error("Error fetching product:", error);
+      console.error("Error fetching products:", error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
-  } else if (method === 'PUT') {
+  } else if (method === 'POST') {
+    // Create a new product
     verifyToken(req, res, async () => {
       const { name, description, price, quantity } = req.body;
       try {
         const result = await pool.query(
-          'UPDATE products SET name = $1, description = $2, price = $3, quantity = $4 WHERE id = $5 RETURNING *',
-          [name, description, price, quantity, id]
+          'INSERT INTO products (name, description, price, quantity) VALUES ($1, $2, $3, $4) RETURNING *',
+          [name, description, price, quantity]
         );
-        if (result.rows.length > 0) {
-          res.status(200).json(result.rows[0]);
-        } else {
-          res.status(404).json({ error: 'Product not found' });
-        }
+        res.status(201).json(result.rows[0]);
       } catch (error) {
-        console.error("Error updating product:", error);
+        console.error("Error creating product:", error);
         res.status(400).json({ error: 'Bad Request' });
       }
     });
-  } else if (method === 'DELETE') {
-    verifyToken(req, res, async () => {
-      try {
-        const result = await pool.query('DELETE FROM products WHERE id = $1', [id]);
-        if (result.rowCount > 0) {
-          res.status(204).send(); // No content
-        } else {
-          res.status(404).json({ error: 'Product not found' });
-        }
-      } catch (error) {
-        console.error("Error deleting product:", error);
-        res.status(500).json({ error: 'Internal Server Error' });
-      }
-    });
-  } else {
-    res.setHeader('Allow', ['GET', 'PUT', 'DELETE']);
+  }  else {
+    res.setHeader('Allow', ['GET', 'POST']);
     res.status(405).end(`Method ${method} Not Allowed`);
   }
 }
