@@ -1,21 +1,13 @@
-// db.js
 const { Pool } = require('pg');
-if (process.env.NODE_ENV !== 'production') {
-    require('dotenv').config();
-}
 
-// Configure PostgreSQL connection
+// Use the connection URL if available
+const connectionString = process.env.DATABASE_URL || 'postgres://default:6bfw5QPOqxvV@ep-wild-art-a49ivehj.us-east-1.aws.neon.tech:5432/verceldb?sslmode=require';
+
 const pool = new Pool({
-  user: process.env.POSTGRES_USER,
-  host: process.env.POSTGRES_HOST,
-  database: process.env.POSTGRES_DATABASE,
-  password: process.env.POSTGRES_PASSWORD,
-  port: 5432 || process.env.PG_PORT,
-  // Set ssl only in production
-  ssl: process.env.NODE_ENV === 'production' ? {
-    rejectUnauthorized: false, // This may be necessary for some cloud providers like Vercel
-  } : false, // Disable SSL for local development
+  connectionString,
+  ssl: {
+    rejectUnauthorized: false, // Necessary for Vercel and some cloud providers
+  },
 });
 
-// Export a query function to be used by other files
 module.exports = { pool };
