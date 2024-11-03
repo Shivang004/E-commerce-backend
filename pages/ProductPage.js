@@ -263,8 +263,8 @@ const ProductPage = () => {
                 defaultValue=""
               >
                 <option value="" disabled>Select Sorting</option>
-                <option value="ascending">Sort Ascending</option>
-                <option value="descending">Sort Descending</option>
+                <option value="ascending">Sort Lowest First</option>
+                <option value="descending">Sort Highest First</option>
               </select>
             </th>
             <th>
@@ -274,8 +274,8 @@ const ProductPage = () => {
                 defaultValue=""
               >
                 <option value="" disabled>Select Sorting</option>
-                <option value="ascending">Sort Ascending</option>
-                <option value="descending">Sort Descending</option>
+                <option value="ascending">Sort Lowest First</option>
+                <option value="descending">Sort Highest First</option>
               </select>
             </th>
             <th>Actions</th>
@@ -291,7 +291,7 @@ const ProductPage = () => {
                 <td>{index + 1}</td>
                 <td>{product.name}</td>
                 <td>{product.description}</td>
-                <td>${product.price.toFixed(2)}</td>
+                <td>{product.price !== null && !isNaN(product.price) ? product.price.toFixed(2) : 'N/A'}</td> {/* Fix applied here */}
                 <td>{product.quantity}</td>
                 <td>
                   <button onClick={() => handleEdit(product)}>Edit</button>
